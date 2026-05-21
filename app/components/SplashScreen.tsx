@@ -56,9 +56,9 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       {/* Soft radial glow — subtle and shifted left */}
       <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-terracotta/[0.05] blur-[250px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center text-left pl-2 sm:pl-6 md:pl-12 pt-6 md:pt-12 md:translate-y-6">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col md:flex-row items-center text-left pl-2 sm:pl-6 md:pl-12 gap-8 md:gap-0">
         {/* Left: Asymmetric Slogan biased to the left */}
-        <div className="md:col-span-8 flex flex-col text-left font-montserrat font-black tracking-tight select-none pt-4 max-w-3xl">
+        <div className="w-full md:w-[62%] flex flex-col text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
           {SLOGAN_LINES.map((line, idx) => {
             let styleClass = "";
             if (line.type === "white-huge") {
@@ -92,7 +92,7 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
         </div>
 
         {/* Right: Button placed asymmetrically to the right on desktop */}
-        <div className="md:col-span-4 flex justify-start md:justify-center items-center mt-8 md:mt-0">
+        <div className="w-full md:w-[38%] flex justify-start md:justify-center items-center mt-8 md:mt-0">
           <motion.button
             onClick={onEnter}
             className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-4 py-2.5 md:px-7 md:py-4 flex items-center gap-2 md:gap-4 text-[9px] md:text-xs uppercase tracking-[0.2em] font-semibold font-body"
