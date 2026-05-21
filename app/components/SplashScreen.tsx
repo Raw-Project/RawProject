@@ -57,57 +57,72 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       {/* Soft radial glow — subtle and shifted left */}
       <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-terracotta/[0.05] blur-[250px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col items-start text-left pl-2 sm:pl-6 md:pl-12">
-        {/* Top: Asymmetric Slogan biased to the left */}
-        <div className="flex flex-col text-left font-montserrat font-black tracking-tight select-none pt-4 max-w-3xl">
-          {SLOGAN_LINES.map((line, idx) => {
-            let styleClass = "";
-            if (line.type === "white-huge") {
-              styleClass = "text-cream text-[clamp(3.5rem,9vw,8rem)] font-black leading-none mb-1 md:mb-2";
-            } else if (line.type === "gray") {
-              styleClass = "text-cream/30 text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
-            } else if (line.type === "gray-space") {
-              styleClass = "text-cream/30 text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9] mb-4 md:mb-6";
-            } else if (line.type === "white") {
-              styleClass = "text-cream text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
-            } else if (line.type === "accent") {
-              styleClass = "text-terracotta text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
-            }
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-center pl-2 sm:pl-6 md:pl-12 translate-y-4 md:translate-y-8">
+        {/* Left Column: Slogan and Button */}
+        <div className="md:col-span-8 flex flex-col items-start text-left">
+          {/* Top: Asymmetric Slogan biased to the left */}
+          <div className="flex flex-col text-left font-montserrat font-black tracking-tight select-none pt-4 max-w-3xl">
+            {SLOGAN_LINES.map((line, idx) => {
+              let styleClass = "";
+              if (line.type === "white-huge") {
+                styleClass = "text-cream text-[clamp(3.5rem,9vw,8rem)] font-black leading-none mb-1 md:mb-2";
+              } else if (line.type === "gray") {
+                styleClass = "text-cream/30 text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
+              } else if (line.type === "gray-space") {
+                styleClass = "text-cream/30 text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9] mb-4 md:mb-6";
+              } else if (line.type === "white") {
+                styleClass = "text-cream text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
+              } else if (line.type === "accent") {
+                styleClass = "text-terracotta text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
+              }
 
-            return (
-              <motion.span
-                key={idx}
-                initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.1 + idx * 0.1,
-                  ease: [0.32, 0.72, 0, 1],
-                }}
-                className={styleClass}
-              >
-                {line.text}
-              </motion.span>
-            );
-          })}
+              return (
+                <motion.span
+                  key={idx}
+                  initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.1 + idx * 0.1,
+                    ease: [0.32, 0.72, 0, 1],
+                  }}
+                  className={styleClass}
+                >
+                  {line.text}
+                </motion.span>
+              );
+            })}
+          </div>
+
+          {/* Button right below slogan */}
+          <div className="relative flex flex-col items-start mt-8 md:mt-14">
+            <motion.button
+              onClick={onEnter}
+              className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-4 py-2.5 md:px-7 md:py-4 flex items-center gap-2 md:gap-4 text-[9px] md:text-xs uppercase tracking-[0.2em] font-semibold font-body"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <span>DESCUBRE CÓMO</span>
+              <span className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-charcoal/10 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-110">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5 md:w-3.5 md:h-3.5">
+                  <path d="M7 17L17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </span>
+            </motion.button>
+          </div>
         </div>
 
-        {/* Button right below slogan */}
-        <div className="relative flex flex-col items-start mt-8 md:mt-14">
-          <motion.button
-            onClick={onEnter}
-            className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-4 py-2.5 md:px-7 md:py-4 flex items-center gap-2 md:gap-4 text-[9px] md:text-xs uppercase tracking-[0.2em] font-semibold font-body"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <span>DESCUBRE CÓMO</span>
-            <span className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-charcoal/10 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-110">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5 md:w-3.5 md:h-3.5">
-                <path d="M7 17L17 7" />
-                <path d="M7 7h10v10" />
-              </svg>
-            </span>
-          </motion.button>
+        {/* Right Column: Logo (hidden on mobile, shown on desktop where drawn) */}
+        <div className="md:col-span-4 hidden md:flex items-center justify-center lg:justify-end pr-4 lg:pr-12 splash-reveal splash-logo">
+          <Image
+            src="/logo-white.png"
+            alt="RAW"
+            width={658}
+            height={234}
+            priority
+            className="w-[18vw] max-w-[220px] h-auto object-contain opacity-95"
+          />
         </div>
       </div>
     </motion.div>
