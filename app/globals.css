@@ -17,6 +17,7 @@
   --color-warm-gray: #8A8580;
 
   --font-display: 'Clash Display', sans-serif;
+  --font-accent: 'Satoshi', sans-serif;
   --font-body: var(--font-jakarta, 'Plus Jakarta Sans'), sans-serif;
 
   --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
@@ -70,6 +71,19 @@
   90% { transform: translate(-10%, 10%); }
 }
 
+@keyframes splash-reveal {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* ---- Base Styles ---- */
 
 html {
@@ -83,6 +97,43 @@ body {
   color: var(--color-charcoal);
   font-family: var(--font-body);
   overflow-x: hidden;
+}
+
+/* ---- Splash Screen ---- */
+
+.splash-screen {
+  min-height: 100svh;
+  padding: max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.splash-reveal {
+  opacity: 0;
+  animation: splash-reveal 700ms var(--ease-premium) forwards;
+  will-change: opacity, transform, filter;
+}
+
+.splash-logo {
+  animation-delay: 120ms;
+}
+
+.splash-kicker {
+  animation-delay: 260ms;
+}
+
+.splash-action {
+  animation-delay: 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
 /* ---- Selection ---- */

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -40,16 +41,19 @@ export default function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
         transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-        className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] md:w-auto md:min-w-[720px] lg:min-w-[800px] rounded-full px-4 md:px-6 py-3 flex items-center justify-between transition-colors duration-500 ${
+        className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] md:w-auto md:min-w-[720px] lg:min-w-[800px] rounded-full px-4 md:px-6 py-2 md:py-2.5 flex items-center justify-between transition-colors duration-500 ${
           scrolled
             ? "bg-cream/80 backdrop-blur-2xl shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] border border-charcoal/[0.06]"
             : "bg-cream/40 backdrop-blur-xl border border-charcoal/[0.04]"
         }`}
       >
-        <img
+        <Image
           src={LOGO_BLACK}
           alt="RAW"
-          className="h-16 md:h-20 opacity-80 hover:opacity-100 transition-opacity duration-500"
+          width={160}
+          height={80}
+          priority
+          className="h-[14px] md:h-[18px] w-auto opacity-80 hover:opacity-100 transition-opacity duration-500"
         />
 
         <div className="hidden md:flex items-center gap-8">

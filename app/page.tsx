@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import SplashScreen from "./components/SplashScreen";
 import Navbar from "./components/Navbar";
@@ -15,13 +15,6 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   const [hasEntered, setHasEntered] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) return null;
 
   return (
     <div className="bg-cream min-h-screen text-charcoal">

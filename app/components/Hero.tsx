@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 
-const words = ["Creatividad", "que", "Forja", "Legados"];
+const words = ["¿Quiéres", "que", "tu", "marca", "sea", "RELEVANTE?"];
 
 export default function Hero() {
   return (
@@ -12,28 +12,18 @@ export default function Hero() {
 
       <div className="relative w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
         {/* Left: Typography */}
-        <div className="lg:col-span-7 xl:col-span-7">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.32, 0.72, 0, 1] }}
-            className="eyebrow mb-10"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-terracotta" />
-            Consultoría de Élite
-          </motion.div>
-
-          <h1 className="mb-8">
+        <div className="lg:col-span-6 xl:col-span-6">
+          <h1 className="mb-8 leading-[0.88] lg:leading-[0.82] tracking-tighter">
             {words.map((word, i) => (
               <motion.span
                 key={i}
                 initial={{ opacity: 0, y: 60, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 1, delay: 0.4 + i * 0.12, ease: [0.32, 0.72, 0, 1] }}
-                className={`inline-block mr-[0.3em] font-display tracking-tight leading-[1.05] ${
-                  word === "Legados"
-                    ? "text-terracotta italic font-light"
-                    : "text-charcoal font-semibold"
+                className={`inline-block mr-[0.3em] tracking-tighter leading-[0.88] lg:leading-[0.82] ${
+                  word.includes("RELEVANTE")
+                    ? "text-terracotta font-black font-[family-name:var(--font-accent)]"
+                    : "text-charcoal font-light font-display"
                 } text-[clamp(3rem,8vw,7rem)]`}
               >
                 {word}
@@ -47,8 +37,7 @@ export default function Hero() {
             transition={{ duration: 0.9, delay: 1, ease: [0.32, 0.72, 0, 1] }}
             className="text-warm-gray text-lg md:text-xl max-w-xl leading-relaxed mb-12 font-light"
           >
-            Elevamos marcas a través de dirección de arte meticulosa, estrategia
-            de alto impacto e identidades visuales que trascienden lo ordinario.
+            <strong className="font-semibold text-charcoal">No</strong> es lo mismo <strong className="font-semibold text-charcoal">&quot;subir videitos&quot;</strong> de tu negocio a <strong className="font-semibold text-charcoal">redes sociales</strong> a una <strong className="font-semibold text-charcoal">estrategia</strong> que posicione tu <strong className="font-semibold text-charcoal">marca</strong> por <strong className="font-semibold text-charcoal">encima</strong> de los <strong className="font-semibold text-charcoal">demás</strong>.
           </motion.p>
 
           <motion.div
@@ -76,22 +65,25 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right: Abstract visual */}
+        {/* Right: Premium video showcase without frame, balanced layout */}
         <motion.div
-          className="lg:col-span-5 xl:col-span-5 hidden lg:flex items-center justify-center relative"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.4, delay: 0.6, ease: [0.32, 0.72, 0, 1] }}
+          className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative w-full mt-12 lg:mt-0 px-4 sm:px-8 lg:px-0"
+          initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.2, ease: [0.32, 0.72, 0, 1] }}
         >
-          <div className="relative w-[380px] h-[380px] xl:w-[440px] xl:h-[440px]">
-            {/* Outer ring */}
-            <div className="absolute inset-0 rounded-full border border-charcoal/[0.06] animate-[spin_40s_linear_infinite]" />
-            {/* Inner gradient sphere */}
-            <div className="absolute inset-8 rounded-full bg-gradient-to-br from-charcoal via-charcoal-light to-terracotta/80 shadow-[0_0_80px_-10px_rgba(196,99,74,0.3)]" />
-            {/* Highlight reflection */}
-            <div className="absolute inset-12 rounded-full bg-gradient-to-t from-transparent via-cream/5 to-cream/15" />
-            {/* Orbiting dot */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-terracotta animate-[spin_20s_linear_infinite] origin-[50%_240px] xl:origin-[50%_270px]" />
+          <div className="relative group max-h-[50vh] sm:max-h-[55vh] lg:max-h-[65vh] w-fit mx-auto">
+            <video
+              src="/video.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="max-h-[50vh] sm:max-h-[55vh] lg:max-h-[65vh] w-auto h-auto rounded-[2rem] shadow-[0_20px_50px_rgba(10,10,11,0.08)] object-contain transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.01]"
+            />
+            {/* Subtle glass reflection overlay on the video element */}
+            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-tr from-transparent via-cream/5 to-cream/10 pointer-events-none" />
           </div>
         </motion.div>
       </div>

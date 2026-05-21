@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { motion } from "motion/react";
 
 const LOGO_WHITE = "/logo-white.png";
@@ -32,10 +33,12 @@ export default function Footer() {
         >
           {/* Brand */}
           <div className="md:col-span-5">
-            <img
+            <Image
               src={LOGO_WHITE}
               alt="RAW"
-              className="h-16 mb-6 opacity-70"
+              width={128}
+              height={64}
+              className="h-[14px] w-auto mb-6 opacity-70"
             />
             <p className="text-cream/40 text-sm font-light max-w-xs mb-8 leading-relaxed">
               Diseño de élite. Reducción hacia la esencia. Donde la
