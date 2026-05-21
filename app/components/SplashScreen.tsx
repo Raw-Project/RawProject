@@ -26,19 +26,174 @@ const SLOGAN_LINES = [
   { text: "IGNORARTE", type: "accent" },
 ];
 
-/* ── Drift particles ──
-   A constellation of tiny luminous particles that
-   gently drift downward from the center, like stardust
-   settling — a natural, symmetrical cue to scroll. */
-const DRIFT_PARTICLES = Array.from({ length: 28 }, (_, i) => {
-  const spread = (seededRandom(i + 500) - 0.5) * 120;   // px from center
-  const size = seededRandom(i + 600) * 2.5 + 1;          // 1–3.5px
-  const delay = seededRandom(i + 700) * 4;                // 0–4s
-  const duration = seededRandom(i + 800) * 3 + 3;         // 3–6s
-  const drift = seededRandom(i + 900) * 50 + 40;          // 40–90px travel
-  const opacity = seededRandom(i + 1000) * 0.5 + 0.15;    // 0.15–0.65
-  return { id: i, spread, size, delay, duration, drift, opacity };
-});
+/* ── Atmospheric particle system ──
+   Full-width ethereal mist at the bottom of the viewport.
+   Blurred, low-res particles drift downward like wisps of air.
+   Cursor proximity warps the flow — particles accelerate and
+   spread around the pointer, creating a living atmosphere. */
+
+interface Particle {
+  x: number;
+  y: number;
+  baseX: number;
+  vx: number;
+  vy: number;
+  size: number;
+  blur: number;
+  opacity: number;
+  maxOpacity: number;
+  life: number;
+  maxLife: number;
+  drift: number;
+}
+
+function createParticle(canvasW: number, zoneTop: number, zoneH: number): Particle {
+  const x = Math.random() * canvasW;
+  const y = zoneTop + Math.random() * zoneH * 0.3; // spawn in upper portion of zone
+  const size = Math.random() * 18 + 4;             // 4–22px — mixed granularity
+  const blur = Math.random() * 12 + 3;             // heavy blur for "air" feel
+  const maxOpacity = Math.random() * 0.12 + 0.03;  // very subtle: 0.03–0.15
+  const maxLife = Math.random() * 240 + 120;        // 2–6s at 60fps
+  return {
+    x, y, baseX: x,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: Math.random() * 0.6 + 0.15,  // gentle downward drift
+    size, blur, opacity: 0, maxOpacity,
+    life: 0, maxLife,
+    drift: (Math.random() - 0.5) * 0.4,
+  };
+}
+
+function AirField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+  const particlesRef = useRef<Particle[]>([]);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const onMouseMove = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", onMouseMove);
+
+    // Zone: bottom 28% of viewport
+    const W = () => window.innerWidth;
+    const H = () => window.innerHeight;
+    const zoneTop = () => H() * 0.72;
+    const zoneH = () => H() * 0.28;
+
+    // Initial population
+    const PARTICLE_COUNT = 65;
+    particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () =>
+      createParticle(W(), zoneTop(), zoneH())
+    );
+    // Randomize initial life so they don't all appear at once
+    particlesRef.current.forEach(p => {
+      p.life = Math.random() * p.maxLife;
+    });
+
+    const animate = () => {
+      const w = W();
+      const h = H();
+      const zt = zoneTop();
+      const zh = zoneH();
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+
+      ctx.clearRect(0, 0, w, h);
+
+      for (let i = 0; i < particlesRef.current.length; i++) {
+        const p = particlesRef.current[i];
+        p.life++;
+
+        // Lifecycle opacity: fade in → sustain → fade out
+        const lifeRatio = p.life / p.maxLife;
+        if (lifeRatio < 0.15) {
+          p.opacity = (lifeRatio / 0.15) * p.maxOpacity;
+        } else if (lifeRatio > 0.75) {
+          p.opacity = ((1 - lifeRatio) / 0.25) * p.maxOpacity;
+        } else {
+          p.opacity = p.maxOpacity;
+        }
+
+        // Cursor influence — particles within ~200px of cursor get gently pushed
+        const dx = p.x - mx;
+        const dy = p.y - my;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const cursorRadius = 200;
+
+        if (dist < cursorRadius && dist > 0) {
+          const force = (1 - dist / cursorRadius) * 1.2;
+          const angle = Math.atan2(dy, dx);
+          p.vx += Math.cos(angle) * force * 0.15;
+          p.vy += Math.sin(angle) * force * 0.08;
+          // Boost opacity near cursor for a luminous glow trail
+          p.opacity = Math.min(p.opacity * 1.6, 0.25);
+        }
+
+        // Horizontal sine drift for organic movement
+        p.x += p.vx + Math.sin(p.life * 0.015 + p.drift * 10) * p.drift;
+        p.y += p.vy;
+
+        // Dampen velocity
+        p.vx *= 0.97;
+        p.vy *= 0.985;
+        // Restore baseline downward drift
+        p.vy += 0.005;
+
+        // Recycle if out of life or out of bounds
+        if (p.life >= p.maxLife || p.y > h + 30 || p.x < -40 || p.x > w + 40) {
+          const fresh = createParticle(w, zt, zh);
+          particlesRef.current[i] = fresh;
+          continue;
+        }
+
+        // Draw — blurred radial gradient circles
+        ctx.save();
+        ctx.filter = `blur(${p.blur}px)`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(253, 251, 247, ${p.opacity})`;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none z-20"
+      aria-hidden="true"
+    />
+  );
+}
 
 export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
   const hasTriggered = useRef(false);
@@ -108,6 +263,11 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       {/* Soft radial glow — subtle and shifted left */}
       <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-terracotta/[0.05] blur-[250px] pointer-events-none" />
 
+      {/* Atmospheric air field — desktop only */}
+      <div className="hidden md:block">
+        <AirField />
+      </div>
+
       {/* ── Main content ── */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col items-start text-left pl-2 sm:pl-6 md:pl-12 gap-8">
         {/* Slogan */}
@@ -162,42 +322,6 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
           </motion.button>
         </div>
       </div>
-
-      {/* ── Desktop scroll indicator: stardust drift ── */}
-      <motion.div
-        className="hidden md:flex absolute bottom-12 left-1/2 -translate-x-1/2 flex-col items-center gap-3 pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 1.2 }}
-      >
-        {/* Drifting particles — symmetrically centered */}
-        <div className="relative w-[200px] h-[100px]">
-          {DRIFT_PARTICLES.map((p) => (
-            <div
-              key={p.id}
-              className="absolute rounded-full bg-cream"
-              style={{
-                left: `calc(50% + ${p.spread}px)`,
-                top: 0,
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                opacity: 0,
-                animation: `drift-down ${p.duration}s ease-in-out ${p.delay}s infinite`,
-                ["--drift-distance" as string]: `${p.drift}px`,
-                ["--drift-opacity" as string]: p.opacity,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Subtle pulsing glow beneath the particles */}
-        <div
-          className="w-24 h-[2px] rounded-full bg-cream/20"
-          style={{
-            animation: "scroll-pulse 2.5s ease-in-out infinite",
-          }}
-        />
-      </motion.div>
     </motion.div>
   );
 }
