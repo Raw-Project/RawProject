@@ -85,6 +85,32 @@
   }
 }
 
+/* ---- Stardust drift (scroll indicator) ---- */
+
+@keyframes drift-down {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  15% {
+    opacity: var(--drift-opacity, 0.4);
+    transform: translateY(calc(var(--drift-distance, 60px) * 0.15)) scale(1);
+  }
+  85% {
+    opacity: var(--drift-opacity, 0.4);
+    transform: translateY(calc(var(--drift-distance, 60px) * 0.85)) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--drift-distance, 60px)) scale(0.3);
+  }
+}
+
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.15; transform: scaleX(0.6); }
+  50% { opacity: 0.4; transform: scaleX(1); }
+}
+
 /* ---- Base Styles ---- */
 
 html {
