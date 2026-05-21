@@ -59,7 +59,7 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
 
       <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between h-full min-h-[75vh] md:min-h-[80vh] items-start text-left pl-2 sm:pl-6 md:pl-12">
         {/* Top: Asymmetric Slogan biased to the left */}
-        <div className="flex flex-col text-left font-display font-black tracking-tighter select-none pt-4 max-w-3xl">
+        <div className="flex flex-col text-left font-montserrat font-black tracking-tight select-none pt-4 max-w-3xl">
           {SLOGAN_LINES.map((line, idx) => {
             let styleClass = "";
             if (line.type === "white-huge") {
@@ -92,26 +92,17 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
           })}
         </div>
 
-        {/* Bottom: Logo and Button */}
-        <div className="relative flex flex-col items-start gap-4 mt-12 md:mt-16">
-          <Image
-            src="/logo-white.png"
-            alt="RAW"
-            width={658}
-            height={234}
-            priority
-            className="splash-reveal splash-logo w-[32vw] md:w-[13vw] max-w-[200px] mb-0"
-          />
-
+        {/* Bottom: Button */}
+        <div className="relative flex flex-col items-start mt-12 md:mt-16">
           <motion.button
             onClick={onEnter}
-            className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-5 py-3 md:px-8 md:py-4 flex items-center gap-3 md:gap-4 text-[10px] md:text-xs uppercase tracking-[0.2em] font-semibold font-body mt-2"
+            className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-4 py-2.5 md:px-6 md:py-3.5 flex items-center gap-2 md:gap-3 text-[9px] md:text-[11px] uppercase tracking-[0.2em] font-semibold font-body"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <span>Entrar a la Experiencia</span>
-            <span className="w-8 h-8 rounded-full bg-charcoal/10 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-110">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <span className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-charcoal/10 flex items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-110">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5 md:w-3 md:h-3">
                 <path d="M7 17L17 7" />
                 <path d="M7 7h10v10" />
               </svg>
