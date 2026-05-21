@@ -18,20 +18,33 @@ const STARS = Array.from({ length: 80 }, (_, i) => {
 });
 
 const SLOGAN_LINES = [
-  { text: "NO", type: "white-huge" },
-  { text: "HACEMOS SIMPLE", type: "gray" },
-  { text: "MARKETING", type: "gray-space" },
-  { text: "HACEMOS QUE SEA", type: "gray" },
-  { text: "IMPOSIBLE", type: "white" },
-  { text: "IGNORARTE", type: "accent" },
+  { 
+    text: "NO", 
+    className: "text-cream text-[clamp(4.2rem,15vw,8.5rem)] font-black leading-none mb-2 md:mb-4" 
+  },
+  { 
+    text: "HACEMOS SIMPLE", 
+    className: "text-cream/30 text-[clamp(2.4rem,8vw,5.5rem)] font-black leading-[0.9] mb-1" 
+  },
+  { 
+    text: "MARKETING", 
+    className: "text-cream/30 text-[clamp(2.8rem,9vw,6.2rem)] font-black leading-[0.9] mb-6 md:mb-10" 
+  },
+  { 
+    text: "HACEMOS QUE SEA", 
+    className: "text-cream/30 text-[clamp(2.2rem,7.2vw,5rem)] font-black leading-[0.9] mb-1" 
+  },
+  { 
+    text: "IMPOSIBLE", 
+    className: "text-cream text-[clamp(2.8rem,9vw,6.2rem)] font-black leading-[0.9] mb-1" 
+  },
+  { 
+    text: "IGNORARTE", 
+    className: "text-terracotta text-[clamp(2.8rem,9vw,6.2rem)] font-black leading-[0.9]" 
+  },
 ];
 
-/* ── Atmospheric particle system ──
-   Full-width ethereal mist at the bottom of the viewport.
-   Blurred, low-res particles drift downward like wisps of air.
-   Cursor proximity warps the flow — particles accelerate and
-   spread around the pointer, creating a living atmosphere. */
-
+/* ── Atmospheric particle system ── */
 interface Particle {
   x: number;
   y: number;
@@ -49,15 +62,15 @@ interface Particle {
 
 function createParticle(canvasW: number, zoneTop: number, zoneH: number): Particle {
   const x = Math.random() * canvasW;
-  const y = zoneTop + Math.random() * zoneH * 0.3; // spawn in upper portion of zone
-  const size = Math.random() * 18 + 4;             // 4–22px — mixed granularity
-  const blur = Math.random() * 12 + 3;             // heavy blur for "air" feel
-  const maxOpacity = Math.random() * 0.12 + 0.03;  // very subtle: 0.03–0.15
-  const maxLife = Math.random() * 240 + 120;        // 2–6s at 60fps
+  const y = zoneTop + Math.random() * zoneH * 0.3;
+  const size = Math.random() * 18 + 4;
+  const blur = Math.random() * 12 + 3;
+  const maxOpacity = Math.random() * 0.12 + 0.03;
+  const maxLife = Math.random() * 240 + 120;
   return {
     x, y, baseX: x,
     vx: (Math.random() - 0.5) * 0.3,
-    vy: Math.random() * 0.6 + 0.15,  // gentle downward drift
+    vy: Math.random() * 0.6 + 0.15,
     size, blur, opacity: 0, maxOpacity,
     life: 0, maxLife,
     drift: (Math.random() - 0.5) * 0.4,
@@ -92,18 +105,15 @@ function AirField() {
     };
     window.addEventListener("mousemove", onMouseMove);
 
-    // Zone: bottom 28% of viewport
     const W = () => window.innerWidth;
     const H = () => window.innerHeight;
     const zoneTop = () => H() * 0.72;
     const zoneH = () => H() * 0.28;
 
-    // Initial population
     const PARTICLE_COUNT = 65;
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () =>
       createParticle(W(), zoneTop(), zoneH())
     );
-    // Randomize initial life so they don't all appear at once
     particlesRef.current.forEach(p => {
       p.life = Math.random() * p.maxLife;
     });
@@ -122,7 +132,6 @@ function AirField() {
         const p = particlesRef.current[i];
         p.life++;
 
-        // Lifecycle opacity: fade in → sustain → fade out
         const lifeRatio = p.life / p.maxLife;
         if (lifeRatio < 0.15) {
           p.opacity = (lifeRatio / 0.15) * p.maxOpacity;
@@ -132,7 +141,6 @@ function AirField() {
           p.opacity = p.maxOpacity;
         }
 
-        // Cursor influence — particles within ~200px of cursor get gently pushed
         const dx = p.x - mx;
         const dy = p.y - my;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -143,28 +151,22 @@ function AirField() {
           const angle = Math.atan2(dy, dx);
           p.vx += Math.cos(angle) * force * 0.15;
           p.vy += Math.sin(angle) * force * 0.08;
-          // Boost opacity near cursor for a luminous glow trail
           p.opacity = Math.min(p.opacity * 1.6, 0.25);
         }
 
-        // Horizontal sine drift for organic movement
         p.x += p.vx + Math.sin(p.life * 0.015 + p.drift * 10) * p.drift;
         p.y += p.vy;
 
-        // Dampen velocity
         p.vx *= 0.97;
         p.vy *= 0.985;
-        // Restore baseline downward drift
         p.vy += 0.005;
 
-        // Recycle if out of life or out of bounds
         if (p.life >= p.maxLife || p.y > h + 30 || p.x < -40 || p.x > w + 40) {
           const fresh = createParticle(w, zt, zh);
           particlesRef.current[i] = fresh;
           continue;
         }
 
-        // Draw — blurred radial gradient circles
         ctx.save();
         ctx.filter = `blur(${p.blur}px)`;
         ctx.beginPath();
@@ -204,7 +206,6 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
     onEnter();
   }, [onEnter]);
 
-  /* Desktop: listen for wheel/touch-scroll to enter */
   useEffect(() => {
     const isDesktop = window.matchMedia("(min-width: 768px)").matches;
     if (!isDesktop) return;
@@ -269,52 +270,37 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col items-start text-left pl-2 sm:pl-6 md:pl-12 gap-8">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[78vh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-8">
         {/* Slogan */}
         <div className="w-full flex flex-col text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
-          {SLOGAN_LINES.map((line, idx) => {
-            let styleClass = "";
-            if (line.type === "white-huge") {
-              styleClass = "text-cream text-[clamp(3.5rem,9vw,8rem)] font-black leading-none mb-1 md:mb-2";
-            } else if (line.type === "gray") {
-              styleClass = "text-cream/30 text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
-            } else if (line.type === "gray-space") {
-              styleClass = "text-cream/30 text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9] mb-4 md:mb-6";
-            } else if (line.type === "white") {
-              styleClass = "text-cream text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
-            } else if (line.type === "accent") {
-              styleClass = "text-terracotta text-[clamp(2.2rem,5.5vw,5rem)] font-black leading-[0.9]";
-            }
-
-            return (
-              <motion.span
-                key={idx}
-                initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{
-                  duration: 0.8,
-                  delay: 0.1 + idx * 0.1,
-                  ease: [0.32, 0.72, 0, 1],
-                }}
-                className={styleClass}
-              >
-                {line.text}
-              </motion.span>
-            );
-          })}
+          {SLOGAN_LINES.map((line, idx) => (
+            <motion.span
+              key={idx}
+              initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{
+                duration: 0.8,
+                delay: 0.1 + idx * 0.1,
+                ease: [0.32, 0.72, 0, 1],
+              }}
+              className={line.className}
+            >
+              {line.text}
+            </motion.span>
+          ))}
         </div>
 
         {/* Mobile-only button */}
-        <div className="flex md:hidden items-start mt-4">
+        <div className="flex md:hidden items-start w-full">
           <motion.button
             onClick={onEnter}
-            className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-4 py-2.5 flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] font-semibold font-body"
+            className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-5 py-3 flex items-center gap-2.5 text-[10px] uppercase tracking-[0.2em] font-semibold font-body"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             <span>DESCUBRE CÓMO</span>
-            <span className="w-6 h-6 rounded-full bg-charcoal/10 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
+            <span className="w-6.5 h-6.5 rounded-full bg-charcoal/10 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-2.5 h-2.5">
                 <path d="M7 17L17 7" />
                 <path d="M7 7h10v10" />
               </svg>
