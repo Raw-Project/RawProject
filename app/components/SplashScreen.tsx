@@ -17,7 +17,7 @@ const STARS = Array.from({ length: 80 }, (_, i) => {
   return { id: i, x, y, size, delay, duration, maxOpacity };
 });
 
-const SLOGAN_LINES = [
+const SLOGAN_SENTENCE_ONE = [
   {
     text: "NO",
     className:
@@ -38,6 +38,9 @@ const SLOGAN_LINES = [
     className:
       "block text-cream/30 text-[clamp(2.4rem,8vw,6.2rem)] font-black leading-none md:mb-10",
   },
+];
+
+const SLOGAN_SENTENCE_TWO = [
   {
     text: "HACEMOS",
     className:
@@ -59,6 +62,34 @@ const SLOGAN_LINES = [
       "block text-terracotta text-[clamp(2.5rem,8.5vw,6.2rem)] font-black leading-none",
   },
 ];
+
+function SloganLines({
+  lines,
+  startIndex,
+}: {
+  lines: typeof SLOGAN_SENTENCE_ONE;
+  startIndex: number;
+}) {
+  return (
+    <>
+      {lines.map((line, idx) => (
+        <motion.span
+          key={line.text + idx}
+          initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{
+            duration: 0.8,
+            delay: 0.1 + (startIndex + idx) * 0.1,
+            ease: [0.32, 0.72, 0, 1],
+          }}
+          className={line.className}
+        >
+          {line.text}
+        </motion.span>
+      ))}
+    </>
+  );
+}
 
 /* ── Atmospheric particle system ── */
 interface Particle {
@@ -288,22 +319,13 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       {/* ── Main content ── */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[88dvh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-6 md:gap-8 pt-4 pb-6 md:py-0">
         {/* Slogan */}
-        <div className="w-full flex flex-col justify-between flex-1 md:flex-none md:justify-start gap-[0.55em] md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
-          {SLOGAN_LINES.map((line, idx) => (
-            <motion.span
-              key={idx}
-              initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{
-                duration: 0.8,
-                delay: 0.1 + idx * 0.1,
-                ease: [0.32, 0.72, 0, 1],
-              }}
-              className={line.className}
-            >
-              {line.text}
-            </motion.span>
-          ))}
+        <div className="w-full flex flex-col flex-1 justify-center md:flex-none md:justify-start gap-5 sm:gap-6 md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
+          <div className="flex flex-col gap-[0.18em] md:gap-0">
+            <SloganLines lines={SLOGAN_SENTENCE_ONE} startIndex={0} />
+          </div>
+          <div className="flex flex-col gap-[0.18em] md:gap-0">
+            <SloganLines lines={SLOGAN_SENTENCE_TWO} startIndex={SLOGAN_SENTENCE_ONE.length} />
+          </div>
         </div>
 
         {/* Mobile-only button */}
