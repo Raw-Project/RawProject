@@ -17,49 +17,72 @@ const STARS = Array.from({ length: 80 }, (_, i) => {
   return { id: i, x, y, size, delay, duration, maxOpacity };
 });
 
-const SLOGAN_SENTENCE_ONE = [
+type SloganLineDef = {
+  text: string;
+  className: string;
+};
+
+const MOBILE_SENTENCE_ONE: SloganLineDef[] = [
   {
     text: "NO",
     className:
-      "block text-cream text-[clamp(5.75rem,22vw,8.5rem)] font-black leading-none md:mb-4",
+      "block text-cream text-[clamp(4.5rem,min(22vw,14vh),8.5rem)] font-black leading-none md:mb-4",
   },
   {
     text: "HACEMOS",
     className:
-      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "SIMPLE",
     className:
-      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "MARKETING",
     className:
-      "block text-cream/30 text-[clamp(2.85rem,10vw,6.2rem)] font-black leading-none md:mb-10",
+      "block text-cream/30 text-[clamp(2.5rem,min(10vw,6.2vh),6.2rem)] font-black leading-none md:mb-10",
   },
 ];
 
-const SLOGAN_SENTENCE_TWO = [
+const DESKTOP_SENTENCE_ONE: SloganLineDef[] = [
+  {
+    text: "NO",
+    className:
+      "block text-cream text-[clamp(3.5rem,min(8vw,10.5vh),8.5rem)] font-black leading-none md:mb-4",
+  },
+  {
+    text: "HACEMOS SIMPLE",
+    className:
+      "block text-cream/30 text-[clamp(1.9rem,min(4.5vw,5.8vh),5.5rem)] font-black leading-none md:mb-1",
+  },
+  {
+    text: "MARKETING",
+    className:
+      "block text-cream/30 text-[clamp(2.1rem,min(5vw,6.2vh),6.2rem)] font-black leading-none md:mb-10",
+  },
+];
+
+const SLOGAN_SENTENCE_TWO: SloganLineDef[] = [
   {
     text: "HACEMOS",
     className:
-      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] md:text-[clamp(1.9rem,min(4.5vw,5.8vh),5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "QUE SEA",
     className:
-      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] md:text-[clamp(1.9rem,min(4.5vw,5.8vh),5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "IMPOSIBLE",
     className:
-      "block text-cream text-[clamp(2.9rem,10.5vw,6.2rem)] font-black leading-none md:mb-1",
+      "block text-cream text-[clamp(2.5rem,min(10.5vw,6.2vh),6.2rem)] md:text-[clamp(2rem,min(5.2vw,6.2vh),6.2rem)] font-black leading-none md:mb-1",
   },
   {
     text: "IGNORARTE",
     className:
-      "block text-terracotta text-[clamp(2.9rem,10.5vw,6.2rem)] font-black leading-none",
+      "block text-terracotta text-[clamp(2.5rem,min(10.5vw,6.2vh),6.2rem)] md:text-[clamp(2rem,min(5.2vw,6.2vh),6.2rem)] font-black leading-none",
   },
 ];
 
@@ -67,7 +90,7 @@ function SloganLines({
   lines,
   startIndex,
 }: {
-  lines: typeof SLOGAN_SENTENCE_ONE;
+  lines: SloganLineDef[];
   startIndex: number;
 }) {
   return (
@@ -388,18 +411,34 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[92dvh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-5 md:gap-8 pt-2 pb-5 md:py-0">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[92dvh] md:min-h-[100svh] md:max-h-[100svh] md:justify-center items-start text-left pl-2 sm:pl-6 md:pl-12 gap-5 md:gap-0 pt-2 pb-5 md:py-8">
         {/* Slogan */}
         <div
-          className={`w-full flex flex-col flex-1 justify-evenly md:flex-none md:justify-start gap-6 sm:gap-8 md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl ${
+          className={`w-full flex flex-col flex-1 justify-evenly md:flex-none md:justify-start md:max-h-[calc(100svh-4rem)] text-left font-montserrat font-black tracking-tight select-none max-w-3xl md:max-w-none ${
             sloganReady ? "splash-slogan-ready" : ""
           }`}
         >
-          <div className="flex flex-col gap-[0.22em] md:gap-0">
-            <SloganLines lines={SLOGAN_SENTENCE_ONE} startIndex={0} />
+          <div className="flex flex-col gap-[0.22em] md:gap-0 md:mb-0">
+            <div className="md:hidden">
+              <SloganLines lines={MOBILE_SENTENCE_ONE} startIndex={0} />
+            </div>
+            <div className="hidden md:block">
+              <SloganLines lines={DESKTOP_SENTENCE_ONE} startIndex={0} />
+            </div>
           </div>
-          <div className="flex flex-col gap-[0.22em] md:gap-0">
-            <SloganLines lines={SLOGAN_SENTENCE_TWO} startIndex={SLOGAN_SENTENCE_ONE.length} />
+          <div className="flex flex-col gap-[0.22em] md:gap-0 mt-6 sm:mt-8 md:mt-0">
+            <div className="md:hidden">
+              <SloganLines
+                lines={SLOGAN_SENTENCE_TWO}
+                startIndex={MOBILE_SENTENCE_ONE.length}
+              />
+            </div>
+            <div className="hidden md:block">
+              <SloganLines
+                lines={SLOGAN_SENTENCE_TWO}
+                startIndex={DESKTOP_SENTENCE_ONE.length}
+              />
+            </div>
           </div>
         </div>
 
