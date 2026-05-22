@@ -18,29 +18,45 @@ const STARS = Array.from({ length: 80 }, (_, i) => {
 });
 
 const SLOGAN_LINES = [
-  { 
-    text: "NO", 
-    className: "text-cream text-[clamp(4.2rem,15vw,8.5rem)] font-black leading-none mb-2 md:mb-4" 
+  {
+    text: "NO",
+    className:
+      "block text-cream text-[clamp(5rem,19vw,8.5rem)] font-black leading-none md:mb-4",
   },
-  { 
-    text: "HACEMOS SIMPLE", 
-    className: "text-cream/30 text-[clamp(2.4rem,8vw,5.5rem)] font-black leading-[0.9] mb-1" 
+  {
+    text: "HACEMOS",
+    className:
+      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
   },
-  { 
-    text: "MARKETING", 
-    className: "text-cream/30 text-[clamp(2.8rem,9vw,6.2rem)] font-black leading-[0.9] mb-6 md:mb-10" 
+  {
+    text: "SIMPLE",
+    className:
+      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
   },
-  { 
-    text: "HACEMOS QUE SEA", 
-    className: "text-cream/30 text-[clamp(2.2rem,7.2vw,5rem)] font-black leading-[0.9] mb-1" 
+  {
+    text: "MARKETING",
+    className:
+      "block text-cream/30 text-[clamp(2.4rem,8vw,6.2rem)] font-black leading-none md:mb-10",
   },
-  { 
-    text: "IMPOSIBLE", 
-    className: "text-cream text-[clamp(2.8rem,9vw,6.2rem)] font-black leading-[0.9] mb-1" 
+  {
+    text: "HACEMOS",
+    className:
+      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
   },
-  { 
-    text: "IGNORARTE", 
-    className: "text-terracotta text-[clamp(2.8rem,9vw,6.2rem)] font-black leading-[0.9]" 
+  {
+    text: "QUE SEA",
+    className:
+      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
+  },
+  {
+    text: "IMPOSIBLE",
+    className:
+      "block text-cream text-[clamp(2.5rem,8.5vw,6.2rem)] font-black leading-none md:mb-1",
+  },
+  {
+    text: "IGNORARTE",
+    className:
+      "block text-terracotta text-[clamp(2.5rem,8.5vw,6.2rem)] font-black leading-none",
   },
 ];
 
@@ -270,9 +286,9 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[78vh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-8">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[88dvh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-6 md:gap-8 pt-4 pb-6 md:py-0">
         {/* Slogan */}
-        <div className="w-full flex flex-col text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
+        <div className="w-full flex flex-col justify-between flex-1 md:flex-none md:justify-start gap-[0.55em] md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
           {SLOGAN_LINES.map((line, idx) => (
             <motion.span
               key={idx}
