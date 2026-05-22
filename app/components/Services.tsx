@@ -60,8 +60,8 @@ export default function Services() {
         {services.map((svc, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 50, filter: "blur(6px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{ opacity: 0, y: 50, scale: 0.985 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.32, 0.72, 0, 1] }}
             className={`${svc.span} col-span-1`}

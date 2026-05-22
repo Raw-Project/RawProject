@@ -1,27 +1,39 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useInView } from "motion/react";
 
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!isInView) return;
+    const node = ref.current;
+    if (!isInView || !node) return;
+
     const duration = 2000;
-    const startTime = Date.now();
+    let rafId = 0;
+    let lastValue = -1;
+    const startTime = performance.now();
+
     const step = () => {
-      const elapsed = Date.now() - startTime;
+      const elapsed = performance.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [isInView, target]);
+      const nextValue = Math.floor(eased * target);
 
-  return <span ref={ref}>{count}{suffix}</span>;
+      if (nextValue !== lastValue) {
+        node.textContent = `${nextValue}${suffix}`;
+        lastValue = nextValue;
+      }
+
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [isInView, suffix, target]);
+
+  return <span ref={ref}>0{suffix}</span>;
 }
 
 const metrics = [

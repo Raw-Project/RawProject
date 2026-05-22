@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useCallback } from "react";
+import { type CSSProperties, useEffect, useRef, useCallback } from "react";
 import { motion } from "motion/react";
 
 const seededRandom = (seed: number) => {
@@ -75,8 +75,8 @@ function SloganLines({
       {lines.map((line, idx) => (
         <motion.span
           key={line.text + idx}
-          initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={{ opacity: 0, y: 30, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{
             duration: 0.8,
             delay: 0.1 + (startIndex + idx) * 0.1,
@@ -105,6 +105,7 @@ interface Particle {
   life: number;
   maxLife: number;
   drift: number;
+  spriteKey: string;
 }
 
 function createParticle(canvasW: number, zoneTop: number, zoneH: number): Particle {
@@ -114,6 +115,7 @@ function createParticle(canvasW: number, zoneTop: number, zoneH: number): Partic
   const blur = Math.random() * 12 + 3;
   const maxOpacity = Math.random() * 0.12 + 0.03;
   const maxLife = Math.random() * 240 + 120;
+  const spriteKey = `${Math.round(size)}-${Math.round(blur)}`;
   return {
     x, y, baseX: x,
     vx: (Math.random() - 0.5) * 0.3,
@@ -121,6 +123,7 @@ function createParticle(canvasW: number, zoneTop: number, zoneH: number): Partic
     size, blur, opacity: 0, maxOpacity,
     life: 0, maxLife,
     drift: (Math.random() - 0.5) * 0.4,
+    spriteKey,
   };
 }
 
@@ -129,15 +132,48 @@ function AirField() {
   const mouseRef = useRef({ x: -1000, y: -1000 });
   const particlesRef = useRef<Particle[]>([]);
   const rafRef = useRef<number>(0);
+  const spriteCacheRef = useRef<Map<string, HTMLCanvasElement>>(new Map());
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+    const spriteCache = spriteCacheRef.current;
+
+    const getSprite = (particle: Particle) => {
+      const cached = spriteCache.get(particle.spriteKey);
+      if (cached) return cached;
+
+      const radius = Math.ceil(particle.size + particle.blur * 2);
+      const diameter = radius * 2;
+      const sprite = document.createElement("canvas");
+      sprite.width = diameter;
+      sprite.height = diameter;
+
+      const spriteCtx = sprite.getContext("2d");
+      if (spriteCtx) {
+        const gradient = spriteCtx.createRadialGradient(
+          radius,
+          radius,
+          0,
+          radius,
+          radius,
+          radius
+        );
+        gradient.addColorStop(0, "rgba(253,251,247,1)");
+        gradient.addColorStop(0.45, "rgba(253,251,247,0.38)");
+        gradient.addColorStop(1, "rgba(253,251,247,0)");
+        spriteCtx.fillStyle = gradient;
+        spriteCtx.fillRect(0, 0, diameter, diameter);
+      }
+
+      spriteCache.set(particle.spriteKey, sprite);
+      return sprite;
+    };
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const dpr = Math.min(window.devicePixelRatio, 1.5);
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
@@ -174,6 +210,7 @@ function AirField() {
       const my = mouseRef.current.y;
 
       ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = "lighter";
 
       for (let i = 0; i < particlesRef.current.length; i++) {
         const p = particlesRef.current[i];
@@ -214,15 +251,19 @@ function AirField() {
           continue;
         }
 
-        ctx.save();
-        ctx.filter = `blur(${p.blur}px)`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(253, 251, 247, ${p.opacity})`;
-        ctx.fill();
-        ctx.restore();
+        const sprite = getSprite(p);
+        ctx.globalAlpha = p.opacity;
+        ctx.drawImage(
+          sprite,
+          p.x - sprite.width / 2,
+          p.y - sprite.height / 2,
+          sprite.width,
+          sprite.height
+        );
       }
 
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = "source-over";
       rafRef.current = requestAnimationFrame(animate);
     };
 
@@ -284,7 +325,7 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)" }}
+      exit={{ opacity: 0, scale: 1.035 }}
       transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
       className="splash-screen fixed inset-0 z-[100] bg-charcoal flex flex-col justify-center items-center overflow-hidden p-8 sm:p-12 md:p-20 lg:p-24"
     >
@@ -302,8 +343,8 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
               opacity: 0,
               animation: `twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
               animationFillMode: "both",
-              filter: `opacity(${star.maxOpacity})`,
-            }}
+              "--twinkle-opacity": star.maxOpacity,
+            } as CSSProperties}
           />
         ))}
       </div>

@@ -22,8 +22,8 @@ export default function CTASection() {
         </motion.div>
 
         <motion.h2
-          initial={{ opacity: 0, y: 50, filter: "blur(8px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={{ opacity: 0, y: 50, scale: 0.985 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
           className="font-display text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight leading-[1.05] mb-8 max-w-4xl"

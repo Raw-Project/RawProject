@@ -64,8 +64,8 @@ export default function Projects() {
         {projects.map((project, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 60, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{ opacity: 0, y: 60, scale: 0.985 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.9, delay: idx * 0.1, ease: [0.32, 0.72, 0, 1] }}
             className={`${project.span} col-span-1`}

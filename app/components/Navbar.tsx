@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 
 const LOGO_BLACK = "/logo-black.png";
@@ -15,36 +15,48 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const lastYRef = useRef(0);
+  const frameRef = useRef<number | null>(null);
+  const menuOpenRef = useRef(menuOpen);
+  const navHidden = hidden && !menuOpen;
 
-  const handleScroll = useCallback(() => {
-    const y = window.scrollY;
-    setScrolled(y > 50);
-    setHidden(y > 200 && !menuOpen);
+  useEffect(() => {
+    menuOpenRef.current = menuOpen;
   }, [menuOpen]);
 
   useEffect(() => {
-    let lastY = 0;
     const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 50);
-      if (y > lastY && y > 200) setHidden(true);
-      else setHidden(false);
-      lastY = y;
+      if (frameRef.current !== null) return;
+
+      frameRef.current = window.requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const nextScrolled = y > 50;
+        const nextHidden = !menuOpenRef.current && y > lastYRef.current && y > 200;
+
+        setScrolled((current) => (current === nextScrolled ? current : nextScrolled));
+        setHidden((current) => (current === nextHidden ? current : nextHidden));
+
+        lastYRef.current = y;
+        frameRef.current = null;
+      });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frameRef.current !== null) window.cancelAnimationFrame(frameRef.current);
+    };
   }, []);
 
   return (
     <>
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
-        animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
+        animate={{ y: navHidden ? -100 : 0, opacity: navHidden ? 0 : 1 }}
         transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-        className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] md:w-auto md:min-w-[720px] lg:min-w-[800px] rounded-full px-4 md:px-6 py-2 md:py-2.5 flex items-center justify-between transition-colors duration-500 ${
+        className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] md:w-auto md:min-w-[720px] lg:min-w-[800px] rounded-full px-4 md:px-6 py-2 md:py-2.5 flex items-center justify-between transition-colors duration-500 will-change-transform ${
           scrolled
-            ? "bg-cream/80 backdrop-blur-2xl shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] border border-charcoal/[0.06]"
-            : "bg-cream/40 backdrop-blur-xl border border-charcoal/[0.04]"
+            ? "bg-cream/90 backdrop-blur-md shadow-[0_2px_20px_-4px_rgba(0,0,0,0.08)] border border-charcoal/[0.06]"
+            : "bg-cream/60 backdrop-blur-sm border border-charcoal/[0.04]"
         }`}
       >
         <Image
@@ -99,7 +111,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed inset-0 z-40 bg-charcoal/90 backdrop-blur-3xl flex flex-col items-center justify-center"
+            className="fixed inset-0 z-40 bg-charcoal/95 backdrop-blur-sm flex flex-col items-center justify-center"
           >
             <div className="flex flex-col items-center gap-8">
               {NAV_LINKS.map((link, i) => (

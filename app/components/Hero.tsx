@@ -7,8 +7,8 @@ export default function Hero() {
   return (
     <section className="relative min-h-[100dvh] flex items-center px-4 md:px-12 lg:px-20 max-w-[1400px] mx-auto pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden">
       {/* Decorative gradient orb */}
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full bg-gradient-to-br from-terracotta/8 via-muted-gold/5 to-transparent blur-[120px] pointer-events-none animate-float" />
-      <div className="absolute bottom-0 left-10 w-[300px] h-[300px] rounded-full bg-gradient-to-tr from-terracotta/5 to-transparent blur-[100px] pointer-events-none animate-pulse-slow" />
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full bg-gradient-to-br from-terracotta/8 via-muted-gold/5 to-transparent blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-[300px] h-[300px] rounded-full bg-gradient-to-tr from-terracotta/5 to-transparent blur-[100px] pointer-events-none" />
 
       <div className="relative w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
         {/* Left: Typography */}
@@ -17,8 +17,8 @@ export default function Hero() {
             {words.map((word, i) => (
               <motion.span
                 key={i}
-                initial={{ opacity: 0, y: 60, filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                initial={{ opacity: 0, y: 60, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 1, delay: 0.4 + i * 0.12, ease: [0.32, 0.72, 0, 1] }}
                 className={`inline-block mr-[0.3em] tracking-tighter leading-[0.88] lg:leading-[0.82] ${
                   word.includes("RELEVANTE")
@@ -68,8 +68,8 @@ export default function Hero() {
         {/* Right: Premium video showcase without frame, balanced layout */}
         <motion.div
           className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative w-full mt-12 lg:mt-0 px-4 sm:px-8 lg:px-0"
-          initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={{ opacity: 0, y: 50, scale: 0.985 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1.2, ease: [0.32, 0.72, 0, 1] }}
         >

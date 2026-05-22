@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { type CSSProperties, useEffect } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 
@@ -65,13 +65,13 @@ function buildAmbientStars() {
   });
 }
 
+const SHOOTING_STARS = buildShootingStars();
+const AMBIENT_STARS = buildAmbientStars();
+
 export default function LogoTransition({
   onFinish,
   duration = 2600,
 }: LogoTransitionProps) {
-  const shootingStars = useMemo(buildShootingStars, []);
-  const ambientStars = useMemo(buildAmbientStars, []);
-
   useEffect(() => {
     const t = window.setTimeout(onFinish, duration);
     return () => window.clearTimeout(t);
@@ -81,13 +81,13 @@ export default function LogoTransition({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, filter: "blur(8px)" }}
+      exit={{ opacity: 0 }}
       transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
       className="fixed inset-0 z-[110] bg-charcoal overflow-hidden flex items-center justify-center"
       aria-hidden="true"
     >
       <div className="absolute inset-0 pointer-events-none">
-        {ambientStars.map((star) => (
+        {AMBIENT_STARS.map((star) => (
           <div
             key={star.id}
             className="absolute rounded-full bg-cream"
@@ -99,8 +99,8 @@ export default function LogoTransition({
               opacity: 0,
               animation: `twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
               animationFillMode: "both",
-              filter: `opacity(${star.maxOpacity})`,
-            }}
+              "--twinkle-opacity": star.maxOpacity,
+            } as CSSProperties}
           />
         ))}
       </div>
@@ -109,7 +109,7 @@ export default function LogoTransition({
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full bg-cream/[0.04] blur-[120px] pointer-events-none" />
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {shootingStars.map((s) => (
+        {SHOOTING_STARS.map((s) => (
           <motion.div
             key={s.id}
             initial={{ opacity: 0, x: -80 }}
@@ -171,11 +171,10 @@ export default function LogoTransition({
         />
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, filter: "blur(14px)" }}
+          initial={{ opacity: 0, scale: 0.92 }}
           animate={{
             opacity: [0, 1, 1, 1],
             scale: [0.92, 1, 1.015, 1],
-            filter: ["blur(14px)", "blur(0px)", "blur(0px)", "blur(0px)"],
           }}
           transition={{
             duration: 2.0,
@@ -184,7 +183,7 @@ export default function LogoTransition({
             times: [0, 0.45, 0.75, 1],
           }}
           className="relative w-full h-full flex items-center justify-center"
-          style={{ willChange: "transform, opacity, filter" }}
+          style={{ willChange: "transform, opacity" }}
         >
           <Image
             src="/logo-white.png"

@@ -32,8 +32,8 @@ export default function Manifesto() {
           {lines.map((line, i) => (
             <motion.h2
               key={i}
-              initial={{ opacity: 0, y: 50, filter: "blur(8px)" }}
-              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              initial={{ opacity: 0, y: 50, scale: 0.985 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 1, delay: i * 0.2, ease: [0.32, 0.72, 0, 1] }}
               className={`font-display text-5xl md:text-7xl lg:text-8xl xl:text-9xl tracking-tight leading-[1.1] mb-4 ${
