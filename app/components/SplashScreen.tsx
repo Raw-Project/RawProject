@@ -20,7 +20,11 @@ const STARS = Array.from({ length: 80 }, (_, i) => {
 type SloganLineDef = {
   text: string;
   className: string;
+  parts?: { text: string; className: string }[];
 };
+
+const DESKTOP_LINE_GAP = "gap-[0.04em]";
+const DESKTOP_SENTENCE_GAP = "mt-[7vh]";
 
 const MOBILE_SENTENCE_ONE: SloganLineDef[] = [
   {
@@ -49,40 +53,39 @@ const DESKTOP_SENTENCE_ONE: SloganLineDef[] = [
   {
     text: "NO",
     className:
-      "block text-cream text-[clamp(5.5rem,14vh,12rem)] font-black leading-[0.92]",
+      "block text-cream text-[clamp(5.5rem,14vh,12rem)] font-black leading-none",
   },
   {
     text: "HACEMOS SIMPLE",
     className:
-      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-[0.92]",
+      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-none",
   },
   {
     text: "MARKETING",
     className:
-      "block text-cream/30 text-[clamp(3rem,7.8vh,7rem)] font-black leading-[0.92]",
+      "block text-cream/30 text-[clamp(3rem,7.8vh,7rem)] font-black leading-none",
   },
 ];
 
 const DESKTOP_SENTENCE_TWO: SloganLineDef[] = [
   {
-    text: "HACEMOS",
+    text: "HACEMOS QUE",
     className:
-      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-[0.92]",
+      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-none",
   },
   {
-    text: "QUE SEA",
+    text: "SEA IMPOSIBLE",
+    parts: [
+      { text: "SEA ", className: "text-cream/30" },
+      { text: "IMPOSIBLE", className: "text-cream" },
+    ],
     className:
-      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-[0.92]",
-  },
-  {
-    text: "IMPOSIBLE",
-    className:
-      "block text-cream text-[clamp(3.25rem,8vh,7.5rem)] font-black leading-[0.92]",
+      "block text-[clamp(3rem,7.5vh,7rem)] font-black leading-none",
   },
   {
     text: "IGNORARTE",
     className:
-      "block text-terracotta text-[clamp(3.25rem,8vh,7.5rem)] font-black leading-[0.92]",
+      "block text-terracotta text-[clamp(3.25rem,8vh,7.5rem)] font-black leading-none",
   },
 ];
 
@@ -128,7 +131,13 @@ function SloganLines({
             "--slogan-delay": `${120 + (startIndex + idx) * 95}ms`,
           } as CSSProperties}
         >
-          {line.text}
+          {line.parts
+            ? line.parts.map((part, partIdx) => (
+                <span key={partIdx} className={part.className}>
+                  {part.text}
+                </span>
+              ))
+            : line.text}
         </span>
       ))}
     </div>
@@ -457,18 +466,17 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
             />
           </div>
 
-          {/* Desktop — fills vertical space */}
-          <div className="hidden md:flex md:flex-col md:justify-between md:h-[min(88svh,920px)] md:max-h-[92svh] md:py-[1svh]">
+          {/* Desktop — fixed tight leading, sentence break after MARKETING */}
+          <div className="hidden md:flex md:flex-col md:justify-center md:min-h-[88svh]">
             <SloganLines
               lines={DESKTOP_SENTENCE_ONE}
               startIndex={0}
-              className="flex flex-col justify-between flex-[1.05] min-h-0"
+              className={`flex flex-col ${DESKTOP_LINE_GAP}`}
             />
-            <div aria-hidden="true" className="h-[4.5vh] shrink-0" />
             <SloganLines
               lines={DESKTOP_SENTENCE_TWO}
               startIndex={DESKTOP_SENTENCE_ONE.length}
-              className="flex flex-col justify-between flex-[1.35] min-h-0"
+              className={`flex flex-col ${DESKTOP_LINE_GAP} ${DESKTOP_SENTENCE_GAP}`}
             />
           </div>
         </div>
