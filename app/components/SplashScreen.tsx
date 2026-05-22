@@ -1,5 +1,5 @@
 "use client";
-import { type CSSProperties, useEffect, useRef, useCallback } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 const seededRandom = (seed: number) => {
@@ -73,19 +73,15 @@ function SloganLines({
   return (
     <>
       {lines.map((line, idx) => (
-        <motion.span
+        <span
           key={line.text + idx}
-          initial={{ opacity: 0, y: 30, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{
-            duration: 0.8,
-            delay: 0.1 + (startIndex + idx) * 0.1,
-            ease: [0.32, 0.72, 0, 1],
-          }}
-          className={line.className}
+          className={`splash-slogan-line ${line.className}`}
+          style={{
+            "--slogan-delay": `${120 + (startIndex + idx) * 95}ms`,
+          } as CSSProperties}
         >
           {line.text}
-        </motion.span>
+        </span>
       ))}
     </>
   );
@@ -287,12 +283,46 @@ function AirField() {
 
 export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
   const hasTriggered = useRef(false);
+  const [sloganReady, setSloganReady] = useState(false);
 
   const handleScroll = useCallback(() => {
     if (hasTriggered.current) return;
     hasTriggered.current = true;
     onEnter();
   }, [onEnter]);
+
+  useEffect(() => {
+    let cancelled = false;
+    let rafOne = 0;
+    let rafTwo = 0;
+    const fallback = window.setTimeout(() => {
+      if (!cancelled) setSloganReady(true);
+    }, 900);
+
+    const reveal = () => {
+      rafOne = window.requestAnimationFrame(() => {
+        rafTwo = window.requestAnimationFrame(() => {
+          if (!cancelled) {
+            window.clearTimeout(fallback);
+            setSloganReady(true);
+          }
+        });
+      });
+    };
+
+    if ("fonts" in document) {
+      document.fonts.ready.then(reveal, reveal);
+    } else {
+      reveal();
+    }
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(fallback);
+      window.cancelAnimationFrame(rafOne);
+      window.cancelAnimationFrame(rafTwo);
+    };
+  }, []);
 
   useEffect(() => {
     const isDesktop = window.matchMedia("(min-width: 768px)").matches;
@@ -360,7 +390,11 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       {/* ── Main content ── */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[92dvh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-5 md:gap-8 pt-2 pb-5 md:py-0">
         {/* Slogan */}
-        <div className="w-full flex flex-col flex-1 justify-evenly md:flex-none md:justify-start gap-6 sm:gap-8 md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
+        <div
+          className={`w-full flex flex-col flex-1 justify-evenly md:flex-none md:justify-start gap-6 sm:gap-8 md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl ${
+            sloganReady ? "splash-slogan-ready" : ""
+          }`}
+        >
           <div className="flex flex-col gap-[0.22em] md:gap-0">
             <SloganLines lines={SLOGAN_SENTENCE_ONE} startIndex={0} />
           </div>
@@ -373,7 +407,7 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
         <div className="flex md:hidden items-start w-full">
           <motion.button
             onClick={onEnter}
-            className="splash-reveal splash-action magnetic-btn group relative rounded-full bg-cream text-charcoal px-5 py-3 flex items-center gap-2.5 text-[10px] uppercase tracking-[0.2em] font-semibold font-body"
+            className={`${sloganReady ? "splash-reveal splash-action" : "opacity-0"} magnetic-btn group relative rounded-full bg-cream text-charcoal px-5 py-3 flex items-center gap-2.5 text-[10px] uppercase tracking-[0.2em] font-semibold font-body`}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >

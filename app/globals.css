@@ -83,6 +83,17 @@
   }
 }
 
+@keyframes splash-slogan-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.45rem, 0) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @keyframes main-reveal {
   from {
     opacity: 0;
@@ -155,6 +166,17 @@ body {
   will-change: opacity, transform;
 }
 
+.splash-slogan-line {
+  opacity: 0;
+  transform: translate3d(0, 1.45rem, 0) scale(0.992);
+  transform-origin: left center;
+}
+
+.splash-slogan-ready .splash-slogan-line {
+  animation: splash-slogan-reveal 760ms var(--ease-premium) var(--slogan-delay, 0ms) both;
+  will-change: opacity, transform;
+}
+
 .splash-logo {
   animation-delay: 120ms;
 }
@@ -172,6 +194,18 @@ body {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .splash-slogan-line {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .splash-slogan-ready .splash-slogan-line {
+    animation-duration: 620ms;
   }
 }
 
