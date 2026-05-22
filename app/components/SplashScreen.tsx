@@ -49,17 +49,40 @@ const DESKTOP_SENTENCE_ONE: SloganLineDef[] = [
   {
     text: "NO",
     className:
-      "block text-cream text-[clamp(3.5rem,min(8vw,10.5vh),8.5rem)] font-black leading-none md:mb-4",
+      "block text-cream text-[clamp(5.5rem,14vh,12rem)] font-black leading-[0.92]",
   },
   {
     text: "HACEMOS SIMPLE",
     className:
-      "block text-cream/30 text-[clamp(1.9rem,min(4.5vw,5.8vh),5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-[0.92]",
   },
   {
     text: "MARKETING",
     className:
-      "block text-cream/30 text-[clamp(2.1rem,min(5vw,6.2vh),6.2rem)] font-black leading-none md:mb-10",
+      "block text-cream/30 text-[clamp(3rem,7.8vh,7rem)] font-black leading-[0.92]",
+  },
+];
+
+const DESKTOP_SENTENCE_TWO: SloganLineDef[] = [
+  {
+    text: "HACEMOS",
+    className:
+      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-[0.92]",
+  },
+  {
+    text: "QUE SEA",
+    className:
+      "block text-cream/30 text-[clamp(3rem,7.5vh,7rem)] font-black leading-[0.92]",
+  },
+  {
+    text: "IMPOSIBLE",
+    className:
+      "block text-cream text-[clamp(3.25rem,8vh,7.5rem)] font-black leading-[0.92]",
+  },
+  {
+    text: "IGNORARTE",
+    className:
+      "block text-terracotta text-[clamp(3.25rem,8vh,7.5rem)] font-black leading-[0.92]",
   },
 ];
 
@@ -67,34 +90,36 @@ const SLOGAN_SENTENCE_TWO: SloganLineDef[] = [
   {
     text: "HACEMOS",
     className:
-      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] md:text-[clamp(1.9rem,min(4.5vw,5.8vh),5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "QUE SEA",
     className:
-      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] md:text-[clamp(1.9rem,min(4.5vw,5.8vh),5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.2rem,min(8.8vw,5.5vh),5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "IMPOSIBLE",
     className:
-      "block text-cream text-[clamp(2.5rem,min(10.5vw,6.2vh),6.2rem)] md:text-[clamp(2rem,min(5.2vw,6.2vh),6.2rem)] font-black leading-none md:mb-1",
+      "block text-cream text-[clamp(2.5rem,min(10.5vw,6.2vh),6.2rem)] font-black leading-none md:mb-1",
   },
   {
     text: "IGNORARTE",
     className:
-      "block text-terracotta text-[clamp(2.5rem,min(10.5vw,6.2vh),6.2rem)] md:text-[clamp(2rem,min(5.2vw,6.2vh),6.2rem)] font-black leading-none",
+      "block text-terracotta text-[clamp(2.5rem,min(10.5vw,6.2vh),6.2rem)] font-black leading-none",
   },
 ];
 
 function SloganLines({
   lines,
   startIndex,
+  className,
 }: {
   lines: SloganLineDef[];
   startIndex: number;
+  className?: string;
 }) {
   return (
-    <>
+    <div className={className}>
       {lines.map((line, idx) => (
         <span
           key={line.text + idx}
@@ -106,7 +131,7 @@ function SloganLines({
           {line.text}
         </span>
       ))}
-    </>
+    </div>
   );
 }
 
@@ -411,34 +436,40 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[92dvh] md:min-h-[100svh] md:max-h-[100svh] md:justify-center items-start text-left pl-2 sm:pl-6 md:pl-12 gap-5 md:gap-0 pt-2 pb-5 md:py-8">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[92dvh] md:min-h-[100svh] md:max-h-[100svh] md:justify-center items-start text-left pl-2 sm:pl-6 md:pl-12 gap-5 md:gap-0 pt-2 pb-5 md:py-[3svh]">
         {/* Slogan */}
         <div
-          className={`w-full flex flex-col flex-1 justify-evenly md:flex-none md:justify-start md:max-h-[calc(100svh-4rem)] text-left font-montserrat font-black tracking-tight select-none max-w-3xl md:max-w-none ${
+          className={`w-full flex flex-col flex-1 justify-evenly md:flex-none text-left font-montserrat font-black tracking-tight select-none max-w-3xl md:max-w-none ${
             sloganReady ? "splash-slogan-ready" : ""
           }`}
         >
-          <div className="flex flex-col gap-[0.22em] md:gap-0 md:mb-0">
-            <div className="md:hidden">
-              <SloganLines lines={MOBILE_SENTENCE_ONE} startIndex={0} />
-            </div>
-            <div className="hidden md:block">
-              <SloganLines lines={DESKTOP_SENTENCE_ONE} startIndex={0} />
-            </div>
+          {/* Mobile */}
+          <div className="md:hidden flex flex-col flex-1 justify-evenly">
+            <SloganLines
+              lines={MOBILE_SENTENCE_ONE}
+              startIndex={0}
+              className="flex flex-col gap-[0.22em]"
+            />
+            <SloganLines
+              lines={SLOGAN_SENTENCE_TWO}
+              startIndex={MOBILE_SENTENCE_ONE.length}
+              className="flex flex-col gap-[0.22em] mt-6 sm:mt-8"
+            />
           </div>
-          <div className="flex flex-col gap-[0.22em] md:gap-0 mt-6 sm:mt-8 md:mt-0">
-            <div className="md:hidden">
-              <SloganLines
-                lines={SLOGAN_SENTENCE_TWO}
-                startIndex={MOBILE_SENTENCE_ONE.length}
-              />
-            </div>
-            <div className="hidden md:block">
-              <SloganLines
-                lines={SLOGAN_SENTENCE_TWO}
-                startIndex={DESKTOP_SENTENCE_ONE.length}
-              />
-            </div>
+
+          {/* Desktop — fills vertical space */}
+          <div className="hidden md:flex md:flex-col md:justify-between md:h-[min(88svh,920px)] md:max-h-[92svh] md:py-[1svh]">
+            <SloganLines
+              lines={DESKTOP_SENTENCE_ONE}
+              startIndex={0}
+              className="flex flex-col justify-between flex-[1.05] min-h-0"
+            />
+            <div aria-hidden="true" className="h-[4.5vh] shrink-0" />
+            <SloganLines
+              lines={DESKTOP_SENTENCE_TWO}
+              startIndex={DESKTOP_SENTENCE_ONE.length}
+              className="flex flex-col justify-between flex-[1.35] min-h-0"
+            />
           </div>
         </div>
 
