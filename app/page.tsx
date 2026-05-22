@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import SplashScreen from "./components/SplashScreen";
+import LogoTransition from "./components/LogoTransition";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
@@ -13,23 +14,32 @@ import Metrics from "./components/Metrics";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
 
+type Stage = "splash" | "transition" | "main";
+
 export default function Home() {
-  const [hasEntered, setHasEntered] = useState(false);
+  const [stage, setStage] = useState<Stage>("splash");
+  const isMainVisible = stage === "main";
 
   return (
     <div className="bg-cream min-h-screen text-charcoal">
       <AnimatePresence mode="wait">
-        {!hasEntered && (
-          <SplashScreen key="splash" onEnter={() => setHasEntered(true)} />
+        {stage === "splash" && (
+          <SplashScreen key="splash" onEnter={() => setStage("transition")} />
+        )}
+        {stage === "transition" && (
+          <LogoTransition
+            key="transition"
+            onFinish={() => setStage("main")}
+          />
         )}
       </AnimatePresence>
 
       <div
         className={`${
-          !hasEntered
-            ? "opacity-0 h-screen overflow-hidden"
-            : "opacity-100"
-        } transition-opacity duration-1000 delay-500`}
+          isMainVisible
+            ? "opacity-100"
+            : "opacity-0 h-screen overflow-hidden"
+        } transition-opacity duration-700 delay-200`}
       >
         <Navbar />
         <main>
