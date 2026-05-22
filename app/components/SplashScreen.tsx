@@ -21,22 +21,22 @@ const SLOGAN_SENTENCE_ONE = [
   {
     text: "NO",
     className:
-      "block text-cream text-[clamp(5rem,19vw,8.5rem)] font-black leading-none md:mb-4",
+      "block text-cream text-[clamp(5.75rem,22vw,8.5rem)] font-black leading-none md:mb-4",
   },
   {
     text: "HACEMOS",
     className:
-      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "SIMPLE",
     className:
-      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "MARKETING",
     className:
-      "block text-cream/30 text-[clamp(2.4rem,8vw,6.2rem)] font-black leading-none md:mb-10",
+      "block text-cream/30 text-[clamp(2.85rem,10vw,6.2rem)] font-black leading-none md:mb-10",
   },
 ];
 
@@ -44,22 +44,22 @@ const SLOGAN_SENTENCE_TWO = [
   {
     text: "HACEMOS",
     className:
-      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "QUE SEA",
     className:
-      "block text-cream/30 text-[clamp(2.1rem,7vw,5.5rem)] font-black leading-none md:mb-1",
+      "block text-cream/30 text-[clamp(2.5rem,8.8vw,5.5rem)] font-black leading-none md:mb-1",
   },
   {
     text: "IMPOSIBLE",
     className:
-      "block text-cream text-[clamp(2.5rem,8.5vw,6.2rem)] font-black leading-none md:mb-1",
+      "block text-cream text-[clamp(2.9rem,10.5vw,6.2rem)] font-black leading-none md:mb-1",
   },
   {
     text: "IGNORARTE",
     className:
-      "block text-terracotta text-[clamp(2.5rem,8.5vw,6.2rem)] font-black leading-none",
+      "block text-terracotta text-[clamp(2.9rem,10.5vw,6.2rem)] font-black leading-none",
   },
 ];
 
@@ -317,13 +317,13 @@ export default function SplashScreen({ onEnter }: { onEnter: () => void }) {
       </div>
 
       {/* ── Main content ── */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[88dvh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-6 md:gap-8 pt-4 pb-6 md:py-0">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col justify-between min-h-[92dvh] md:min-h-0 items-start text-left pl-2 sm:pl-6 md:pl-12 gap-5 md:gap-8 pt-2 pb-5 md:py-0">
         {/* Slogan */}
-        <div className="w-full flex flex-col flex-1 justify-center md:flex-none md:justify-start gap-5 sm:gap-6 md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
-          <div className="flex flex-col gap-[0.18em] md:gap-0">
+        <div className="w-full flex flex-col flex-1 justify-evenly md:flex-none md:justify-start gap-6 sm:gap-8 md:gap-0 text-left font-montserrat font-black tracking-tight select-none max-w-3xl">
+          <div className="flex flex-col gap-[0.22em] md:gap-0">
             <SloganLines lines={SLOGAN_SENTENCE_ONE} startIndex={0} />
           </div>
-          <div className="flex flex-col gap-[0.18em] md:gap-0">
+          <div className="flex flex-col gap-[0.22em] md:gap-0">
             <SloganLines lines={SLOGAN_SENTENCE_TWO} startIndex={SLOGAN_SENTENCE_ONE.length} />
           </div>
         </div>
